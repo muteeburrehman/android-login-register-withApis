@@ -43,7 +43,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
 
                 checkDataEntered();
-                Intent intent = new Intent(Login.this,MainActivity.class);
+                Intent intent = new Intent(Login.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -58,12 +58,11 @@ public class Login extends AppCompatActivity {
     }
 
 
-    void checkDataEntered(){
+    void checkDataEntered() {
 
 
         String userEmail = email.getText().toString();
         String userPassword = password.getText().toString();
-
 
 
         if (isEmpty(email) && isEmpty(password)) {
@@ -75,11 +74,12 @@ public class Login extends AppCompatActivity {
             loginUser(userEmail, userPassword);
         }
 
-        if (isEmailValid(email) == false){
+        if (isEmailValid(email) == false) {
             email.setError("Enter valid email!");
         }
     }
-// void checkUsername(){
+
+    // void checkUsername(){
 //        boolean isValid = true;
 //        if(isEmpty(email) && !isEmail(email)){
 //            email.setError("Write correct email");
@@ -91,47 +91,50 @@ public class Login extends AppCompatActivity {
 //            isValid = false;
 //        }
 // }
-     private void loginUser(String email, String password){
-         HttpRequest request = new HttpRequest();
-         request.setOnResponseListener(new HttpRequest.OnResponseListener() {
-             @Override
-             public void onResponse(HttpResponse response) {
-                 if (response.code == HttpResponse.HTTP_OK) {
-                     System.out.println(response.toJSONObject());
-                     JSONObject obj = response.toJSONObject();
-                     Toast.makeText(Login.this, "User logged in", Toast.LENGTH_SHORT).show();
-                     try {
-                         String token = obj.getString("access_token");
-                         Log.e("token", token);
-                     } catch (JSONException e) {
-                         throw new RuntimeException(e);
-                     }
-                 }else {
-                     Toast.makeText(Login.this, "User not logged in! " + response.code, Toast.LENGTH_SHORT).show();
-                     Log.e("error", response.toString() + ",.,." + response.code + ",.,." + response.reason);
+    private void loginUser(String email, String password) {
+        HttpRequest request = new HttpRequest();
+        request.setOnResponseListener(new HttpRequest.OnResponseListener() {
+            @Override
+            public void onResponse(HttpResponse response) {
+                if (response.code == HttpResponse.HTTP_OK) {
+                    System.out.println(response.toJSONObject());
+                    JSONObject obj = response.toJSONObject();
+                    Toast.makeText(Login.this, "User logged in", Toast.LENGTH_SHORT).show();
+                    try {
+                        String token = obj.getString("access_token");
+                        SharedPreference.saveStringToSharedPreferences("token", token);
+                        Log.e("token", SharedPreference.getStringFromSharedPreferences("token"));
 
-                 }
-             }
-         });
-         request.setOnErrorListener(new HttpRequest.OnErrorListener() {
-             @Override
-             public void onError(HttpError error) {
-                 // There was an error, deal with it
-                 Log.e("error", error.toString() + ",.,." + error.code + ",.,." + error.reason);
-                 Toast.makeText(Login.this, "User not logged in!" + error.code +",.,."+ error.toString(), Toast.LENGTH_SHORT).show();
-             }
-         });
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    Toast.makeText(Login.this, "User not logged in! " + response.code, Toast.LENGTH_SHORT).show();
+                    Log.e("error", response.toString() + ",.,." + response.code + ",.,." + response.reason);
 
-         JSONObject json;
-         try {
-             json = new JSONObject();
-             json.put("email", email);
-             json.put("password", password);
-         } catch (JSONException ignore) {
-             return;
-         }
-         request.post("http://192.168.0.180:8080/login", json);
-     }
+                }
+            }
+        });
+        request.setOnErrorListener(new HttpRequest.OnErrorListener() {
+            @Override
+            public void onError(HttpError error) {
+                // There was an error, deal with it
+                Log.e("error", error.toString() + ",.,." + error.code + ",.,." + error.reason);
+                Toast.makeText(Login.this, "User not logged in!" + error.code + ",.,." + error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        JSONObject json;
+        try {
+            json = new JSONObject();
+            json.put("email", email);
+            json.put("password", password);
+        } catch (JSONException ignore) {
+            return;
+        }
+        request.post("http://192.168.0.180:8080/login", json);
+    }
+
     boolean isEmailValid(EditText text) {
         CharSequence email = text.getText().toString();
         return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());
