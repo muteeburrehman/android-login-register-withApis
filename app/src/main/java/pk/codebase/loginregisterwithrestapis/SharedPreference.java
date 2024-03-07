@@ -1,8 +1,5 @@
 package pk.codebase.loginregisterwithrestapis;
 
-import static android.content.Context.MODE_PRIVATE;
-import static java.security.AccessController.getContext;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +13,7 @@ public class SharedPreference extends Application {
     public void onCreate() {
         super.onCreate();
 
+        System.out.println("--------Malok ha------");
         context = getApplicationContext();
     }
 

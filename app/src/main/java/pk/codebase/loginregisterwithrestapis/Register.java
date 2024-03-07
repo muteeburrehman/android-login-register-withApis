@@ -66,8 +66,8 @@ public class Register extends AppCompatActivity {
     void checkDataEntered(){
 
         String name = username.getText().toString();
-        String userEmail = username.getText().toString();
-        String userPassword = username.getText().toString();
+        String userEmail = email.getText().toString();
+        String userPassword = password.getText().toString();
 
         if(isEmpty(username)){
             username.setError("Field required");
@@ -124,6 +124,6 @@ public class Register extends AppCompatActivity {
         } catch (JSONException ignore) {
             return;
         }
-        request.post("http://192.168.0.180:8080/register", json);
+        request.post("http://192.168.1.9:8080/register", json);
     }
 }
